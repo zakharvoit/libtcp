@@ -25,9 +25,12 @@ namespace tcp
                 void remove_events(int fd, uint32_t events);
 
                 void start();
+                void stop();
 
             private:
                 int efd;
+                int stop_event_fd;
+
                 on_fd_ready_cb on_ready;
                 std::map <int, uint32_t> data;
             };

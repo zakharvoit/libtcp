@@ -18,7 +18,7 @@ void io_service::start()
 
 void io_service::stop()
 {
-	// Stub
+	e.stop();
 }
 
 void io_service::on_ready(int fd, uint32_t)

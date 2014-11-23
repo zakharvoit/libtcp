@@ -17,7 +17,7 @@ namespace tcp
             ~buffer();
 
             buffer& operator=(buffer const&);
-            void reset();;
+            void reset();
             size_t rest_length() const;
             char* operator*();
             void operator+=(int x);

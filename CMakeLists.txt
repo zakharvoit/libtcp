@@ -5,7 +5,8 @@ set(CXX_DEBUG "-Wall -Wextra -g -D_GLIBCXX_DEBUG -fsanitize=undefined")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_DEBUG} -std=c++11 ")
 
 include_directories(include)
-set(SOURCES     include/tcp/async/c/epoll.hh
+set(SOURCES     include/tcp/tcp.hh
+                include/tcp/async/c/epoll.hh
                 include/tcp/async/client.hh
                 include/tcp/async/io_event.hh
                 include/tcp/async/io_service.hh
@@ -30,7 +31,10 @@ target_link_libraries(${PROJECT_NAME})
 find_package(GTest)
 
 set(TEST_SOURCES 	src/test/gtest_main.cc
-                    src/test/async_echo_test.cc)
+                    src/test/tcp/async/c/epoll_test.cc
+                    src/test/tcp/async/echo_test.cc
+                    src/test/tcp/util/address_test.cc
+                    src/test/tcp/util/buffer_test.cc)
 
 if(GTEST_FOUND)
 	add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})

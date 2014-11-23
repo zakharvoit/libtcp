@@ -6,7 +6,7 @@ using namespace tcp::util;
 
 buffer::buffer(void* data, size_t count)
         : data(new char[count]),
-          begin((char*) data),
+          begin(this->data),
           count(count)
 {
     memcpy(this->data, data, count);
