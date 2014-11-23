@@ -5,23 +5,24 @@
 #include "tcp/util/async_value.hh"
 #include "tcp/util/job.hh"
 #include "tcp/async/io_service.hh"
+#include "tcp/async/io_event.hh"
 
 #include <functional>
 
 namespace tcp
 {
-	namespace async
-	{
-		struct server
-		{
-			typedef std::function<void(util::async_value<client>)> on_accept_cb;
-			server(util::address const&);
+    namespace async
+    {
+        struct server
+        {
+            server(util::address const&);
+            void listen(io_service&, on_accept_cb);
+            void close();
 
-			util::job listen(io_service const&, on_accept_cb);
-
-			void close();
-		};
-	}
+        private:
+            int fd;
+        };
+    }
 }
 
 #endif

@@ -5,6 +5,7 @@
 #include "tcp/util/async_value.hh"
 #include "tcp/util/nothing.hh"
 #include "tcp/async/io_service.hh"
+#include "tcp/async/io_event.hh"
 
 #include <functional>
 
@@ -14,18 +15,15 @@ namespace tcp
 	{
 		struct client
 		{
-			typedef std::function<void(util::async_value<util::nothing>)> on_connect_cb;
-			typedef std::function<void(util::async_value<util::buffer>)> on_read_cb;
-			typedef std::function<void(util::async_value<util::nothing>)> on_write_cb;
-
 			client();
-
-			job connect(io_service const&, address const&, on_connect_cb);
-
-			job read(io_service const&, size_t count, on_read_cb);
-			job write(io_service const&, util::buffer, on_write_cb);
-
+            client(int fd) : fd(fd) {} // TODO: this is stub
+			void connect(io_service&, util::address const&, on_connect_cb);
+			void read(io_service&, size_t count, on_read_cb);
+			void write(io_service&, util::buffer, on_write_cb);
 			void close();
+
+        private:
+            int fd;
 		};
 	}
 }

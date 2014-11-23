@@ -5,7 +5,7 @@ build:
 	cd build; cmake .. ; make
 
 test: build
-	cd build; ./socket_test
+	cd build; ./tcp_test
 
 clean:
 	rm -rf build

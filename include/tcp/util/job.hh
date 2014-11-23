@@ -3,13 +3,13 @@
 
 namespace tcp
 {
-	namespace util
-	{
-		struct job
-		{
-			void cancel();
-		};
-	}
+    namespace util
+    {
+        struct job
+        {
+            void cancel();
+        };
+    }
 }
 
 #endif
