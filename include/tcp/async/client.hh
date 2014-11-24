@@ -3,6 +3,8 @@
 
 #include "tcp/util/address.hh"
 #include "tcp/util/async_value.hh"
+#include "tcp/util/buffer.hh"
+#include "tcp/util/canceller.hh"
 #include "tcp/util/nothing.hh"
 #include "tcp/async/io_service.hh"
 #include "tcp/async/io_event.hh"
@@ -23,9 +25,9 @@ namespace tcp
 
             void operator=(client&&);
 
-            void connect(io_service&, util::address const&, on_connect_cb);
-            void read(io_service&, size_t count, on_read_cb);
-            void write(io_service&, util::buffer, on_write_cb);
+            util::canceller connect(io_service&, util::address const&, on_connect_cb);
+            util::canceller read(io_service&, size_t count, on_read_cb);
+            util::canceller write(io_service&, util::buffer, on_write_cb);
 
             int get_fd() const { return fd; }
 

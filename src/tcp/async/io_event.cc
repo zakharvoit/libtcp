@@ -40,8 +40,15 @@ connect_event::connect_event(int fd,
 {
 }
 
+bool io_event::handle()
+{
+    return cancelled;
+}
+
 bool read_event::handle()
 {
+    if (io_event::handle()) return true;
+
     ssize_t read = ::read(fd, *buf, buf.rest_length());
     if (read < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -62,6 +69,8 @@ bool read_event::handle()
 
 bool write_event::handle()
 {
+    if (io_event::handle()) return true;
+
     ssize_t written = write(fd, *buf, buf.rest_length());
     if (written < 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -82,6 +91,8 @@ bool write_event::handle()
 
 bool accept_event::handle()
 {
+    if (io_event::handle()) return true;
+
     sockaddr_in addr;
     socklen_t size = sizeof(addr);
     int peer_fd = accept4(fd, (sockaddr*) &addr, &size, SOCK_NONBLOCK);
@@ -94,11 +105,16 @@ bool accept_event::handle()
     }
 
     on_accept(client(peer_fd));
-    return true;
+
+    // Return false allows to accept many connections by one event
+    // So the only way to stop listening is to use cancel.
+    return false;
 }
 
 bool connect_event::handle()
 {
+    if (io_event::handle()) return true;
+
     sockaddr_in sock_addr = addr.get_sockaddr();
     socklen_t size = sizeof(sock_addr);
     int res = connect(fd, (sockaddr*) &sock_addr, size);
@@ -132,4 +148,15 @@ uint32_t accept_event::events_flag()
 uint32_t connect_event::events_flag()
 {
     return EPOLLOUT;
+}
+
+void io_event::cancel()
+{
+    cancelled = true;
+}
+
+io_event::io_event()
+    : cancelled(false)
+{
+
 }

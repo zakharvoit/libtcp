@@ -24,10 +24,12 @@ server::server(address const& addr)
     }
 }
 
-void server::listen(io_service& service, on_accept_cb cb)
+canceller server::listen(io_service& service, on_accept_cb cb)
 {
     ::listen(fd, 50); // TODO: Dirty const, don't call if already
-    service.add_event(fd, new accept_event(fd, cb));
+    accept_event* ev = new accept_event(fd, cb);
+    service.add_event(fd, ev);
+    return make_canceller(ev);
 }
 
 server::~server()

@@ -9,12 +9,13 @@ struct echo_server
     echo_server(util::address const& addr)
             : s(addr)
     {
-        s.listen(service, [=](async::client&& c) { this->on_accept(move(c)); });
+        listening = s.listen(service, [=](async::client&& c) { this->on_accept(move(c)); });
         service.start();
     }
 
     void on_accept(async::client&& c)
     {
+        listening.cancel();
         this->c = move(c);
         this->c.read(service, 1, [=](util::buffer b) { this->on_read(**b); });
     }
@@ -31,6 +32,7 @@ struct echo_server
     }
 
 private:
+    util::canceller listening;
     async::io_service service;
     async::server s;
     async::client c;

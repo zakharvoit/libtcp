@@ -3,7 +3,7 @@
 
 #include "tcp/util/address.hh"
 #include "tcp/util/async_value.hh"
-#include "tcp/util/job.hh"
+#include "tcp/util/canceller.hh"
 #include "tcp/async/io_service.hh"
 #include "tcp/async/io_event.hh"
 
@@ -18,7 +18,7 @@ namespace tcp
             server(util::address const&);
             ~server();
 
-            void listen(io_service&, on_accept_cb);
+            util::canceller listen(io_service&, on_accept_cb);
 
         private:
             int fd;

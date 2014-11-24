@@ -18,11 +18,16 @@ namespace tcp
 
         struct io_event
         {
-            virtual bool handle() = 0;
+            io_event();
+            virtual ~io_event() = default;
 
+            virtual bool handle();
             virtual uint32_t events_flag() = 0;
 
-            virtual ~io_event() = default;
+            void cancel();
+
+        private:
+            bool cancelled;
         };
 
         struct read_event : io_event

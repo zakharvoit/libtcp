@@ -14,7 +14,7 @@ set(SOURCES     include/tcp/tcp.hh
                 include/tcp/util/address.hh
                 include/tcp/util/async_value.hh
                 include/tcp/util/buffer.hh
-                include/tcp/util/job.hh
+                include/tcp/util/canceller.hh
                 include/tcp/util/nothing.hh
 
                 src/tcp/async/c/epoll.cc
@@ -23,7 +23,8 @@ set(SOURCES     include/tcp/tcp.hh
                 src/tcp/async/io_service.cc
                 src/tcp/async/server.cc
                 src/tcp/util/address.cc
-                src/tcp/util/buffer.cc)
+                src/tcp/util/buffer.cc
+                src/tcp/util/canceller.cc)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_link_libraries(${PROJECT_NAME})

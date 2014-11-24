@@ -9,6 +9,7 @@
 
 using namespace std;
 using namespace tcp::async;
+using namespace tcp::util;
 
 client::client()
     : fd(socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0))
@@ -18,23 +19,30 @@ client::client()
     }
 }
 
-void client::connect(io_service& service,
+canceller client::connect(io_service& service,
         tcp::util::address const& addr,
         on_connect_cb cb)
 {
-    service.add_event(fd, new connect_event(fd, addr, cb));
+    auto ev = new connect_event(fd, addr, cb);
+    service.add_event(fd, ev);
+    return make_canceller(ev);
 }
 
-void client::read(io_service& service,
+canceller client::read(io_service& service,
         size_t count,
         on_read_cb cb)
 {
-    service.add_event(fd, new read_event(fd, count, cb));
+    auto ev = new read_event(fd, count, cb);
+    service.add_event(fd, ev);
+    return make_canceller(ev);
 }
 
-void client::write(io_service& service, tcp::util::buffer buffer, on_write_cb cb)
+canceller client::write(io_service& service, buffer buffer, on_write_cb cb)
 {
-    service.add_event(fd, new write_event(fd, buffer, cb));
+
+    auto ev = new write_event(fd, buffer, cb);
+    service.add_event(fd, ev);
+    return make_canceller(ev);
 }
 
 client::client(client&& c)
