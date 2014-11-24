@@ -27,17 +27,27 @@ void io_service::on_ready(int fd, uint32_t)
 {
 	auto& cb = callbacks[fd];
 
+    uint32_t epoll_flags = 0;
+    uint32_t new_epoll_flags = 0;
 	for (auto it = cb.begin(); it != cb.end();) {
+        epoll_flags |= (*it)->events_flag();
 		if ((*it)->handle()) {
 			delete *it;
 			it = cb.erase(it);
-		}
-		else it++;
+		} else {
+            new_epoll_flags |= (*it)->events_flag();
+            it++;
+        }
 	}
 
     if (cb.empty()) {
         callbacks.erase(fd);
         e.remove(fd);
+    } else {
+        uint32_t removed_flags = epoll_flags & ~new_epoll_flags;
+        if (removed_flags) {
+            e.remove_events(fd, removed_flags);
+        }
     }
 }
 

@@ -118,6 +118,7 @@ bool epoll::contains(int fd) const
 {
     return data.find(fd) != data.end();
 }
+
 void epoll::stop()
 {
     eventfd_write(stop_event_fd, 1);
