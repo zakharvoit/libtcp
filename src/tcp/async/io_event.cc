@@ -1,11 +1,10 @@
 #include "tcp/async/io_event.hh"
+#include "tcp/async/client.hh"
 
 #include <unistd.h>
 #include <netinet/in.h>
 #include <sys/epoll.h>
 
-#include <iostream>
-// TODO: Remove this
 #include <stdexcept>
 #include <cstring>
 #include <ldap.h>
@@ -94,7 +93,7 @@ bool accept_event::handle()
         }
     }
 
-    on_accept(peer_fd);
+    on_accept(client(peer_fd));
     return true;
 }
 

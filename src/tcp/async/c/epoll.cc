@@ -9,7 +9,6 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
-#include <iostream>
 
 using namespace std;
 using namespace tcp::async::c;

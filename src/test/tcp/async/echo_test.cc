@@ -15,9 +15,9 @@ TEST(general, echo)
     async::client peer;
     async::client client;
 
-    server.listen(service, [&](int fd)
+    server.listen(service, [&](async::client&& c)
     {
-        peer = fd;
+        peer = std::move(c);
         peer.write(service, util::buffer((void*) message.c_str(), message.length() + 1), [&]()
         {
             peer.read(service, message.length() + 1, [&](util::buffer buf)

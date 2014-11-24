@@ -40,3 +40,8 @@ if(GTEST_FOUND)
 	add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})
 	target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} ${GTEST_LIBRARIES})
 endif(GTEST_FOUND)
+
+add_executable(echo_server src/example/echo_server.cc)
+add_executable(echo_client src/example/echo_client.cc)
+target_link_libraries(echo_server ${PROJECT_NAME})
+target_link_libraries(echo_client ${PROJECT_NAME})

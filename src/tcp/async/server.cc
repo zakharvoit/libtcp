@@ -30,7 +30,7 @@ void server::listen(io_service& service, on_accept_cb cb)
     service.add_event(fd, new accept_event(fd, cb));
 }
 
-void server::close()
+server::~server()
 {
-    ::close(fd);
+    close(fd);
 }

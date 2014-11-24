@@ -6,9 +6,6 @@
 #include <stdexcept>
 #include <cstring>
 #include <cerrno>
-#include <bits/stl_algo.h>
-#include <ldap.h>
-#include <ksba.h>
 
 using namespace std;
 using namespace tcp::async;
@@ -40,7 +37,21 @@ void client::write(io_service& service, tcp::util::buffer buffer, on_write_cb cb
     service.add_event(fd, new write_event(fd, buffer, cb));
 }
 
-void client::close()
+client::client(client&& c)
 {
-    ::close(fd);
+    close(fd);
+    fd = c.fd;
+    c.fd = -1;
+}
+
+void client::operator=(client&& other)
+{
+    close(fd);
+    fd = other.fd;
+    other.fd = -1;
+}
+
+client::~client()
+{
+    close(fd);
 }

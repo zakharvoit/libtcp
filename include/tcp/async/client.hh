@@ -11,21 +11,33 @@
 
 namespace tcp
 {
-	namespace async
-	{
-		struct client
-		{
-			client();
-            client(int fd) : fd(fd) {} // TODO: this is stub
-			void connect(io_service&, util::address const&, on_connect_cb);
-			void read(io_service&, size_t count, on_read_cb);
-			void write(io_service&, util::buffer, on_write_cb);
-			void close();
+    namespace async
+    {
+        struct client
+        {
+            client();
+            ~client();
+
+            client(client const&) = delete;
+            client(client&&);
+
+            void operator=(client&&);
+
+            void connect(io_service&, util::address const&, on_connect_cb);
+            void read(io_service&, size_t count, on_read_cb);
+            void write(io_service&, util::buffer, on_write_cb);
+
+            int get_fd() const { return fd; }
 
         private:
             int fd;
-		};
-	}
+            client(int fd)
+                    : fd(fd)
+            {}
+
+            friend struct accept_event;
+        };
+    }
 }
 
 #endif

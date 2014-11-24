@@ -32,7 +32,7 @@ TEST(epoll, storage)
     }
 
     for (int& sock : socks) {
-        ASSERT_TRUE(e.get_events(sock) == EPOLLIN | EPOLLOUT);
+        ASSERT_TRUE(e.get_events(sock) == (EPOLLIN | EPOLLOUT));
     }
 
     for (int& sock : socks) {
@@ -48,7 +48,7 @@ TEST(epoll, storage)
         e.remove(sock);
     }
 
-    for (int i = 0; i < count; i++) {
-        ASSERT_FALSE(e.contains(socks[i]));
+    for (int& sock : socks) {
+        ASSERT_FALSE(e.contains(sock));
     }
 }

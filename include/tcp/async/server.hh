@@ -16,11 +16,14 @@ namespace tcp
         struct server
         {
             server(util::address const&);
+            ~server();
+
             void listen(io_service&, on_accept_cb);
-            void close();
 
         private:
             int fd;
+
+            friend struct io_event;
         };
     }
 }

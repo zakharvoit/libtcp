@@ -11,7 +11,7 @@ namespace tcp
 {
     namespace async
     {
-        typedef std::function <void(int fd)> on_accept_cb;
+        typedef std::function <void(struct client&& c)> on_accept_cb;
         typedef std::function <void()> on_connect_cb;
         typedef std::function <void(util::buffer)> on_read_cb;
         typedef std::function <void()> on_write_cb;
