@@ -3,6 +3,9 @@
 
 #include "tcp/util/buffer.hh"
 #include "tcp/util/address.hh"
+#include "tcp/util/maybe.hh"
+#include "tcp/util/nothing.hh"
+#include "tcp/async/client.hh"
 
 #include <cstdint>
 #include <functional>
@@ -11,10 +14,10 @@ namespace tcp
 {
     namespace async
     {
-        typedef std::function <void(struct client&& c)> on_accept_cb;
-        typedef std::function <void()> on_connect_cb;
-        typedef std::function <void(util::buffer)> on_read_cb;
-        typedef std::function <void()> on_write_cb;
+		typedef std::function <void(util::maybe <client>&&)> on_accept_cb;
+        typedef std::function <void(util::maybe <util::nothing>&&)> on_connect_cb;
+        typedef std::function <void(util::maybe <util::buffer>&&)> on_read_cb;
+        typedef std::function <void(util::maybe <util::nothing>&&)> on_write_cb;
 
         struct io_event
         {

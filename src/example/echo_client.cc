@@ -3,12 +3,18 @@
 
 using namespace std;
 using namespace tcp;
+using namespace tcp::util;
+
 
 struct echo_client
 {
-    echo_client(util::address const& addr)
+
+    echo_client(address const& addr)
     {
-        client.connect(service, addr, [&]() { this->on_connect(); });
+        client.connect(service, addr, [&](maybe<nothing>&& e) {
+            e.get();
+            this->on_connect();
+        });
         service.start();
     }
 
@@ -16,8 +22,8 @@ struct echo_client
     {
         char c;
         cin >> noskipws >> c;
-        client.write(service, util::buffer(&c, 1), [=]()
-        {
+        client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
+            e.get();
             this->on_write(c);
         });
     }
@@ -29,7 +35,8 @@ struct echo_client
         } else {
             char c;
             cin >> c;
-            client.write(service, util::buffer(&c, 1), [=]() {
+            client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
+                e.get();
                 this->on_write(c);
             });
         }

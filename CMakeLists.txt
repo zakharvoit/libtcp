@@ -12,7 +12,7 @@ set(SOURCES     include/tcp/tcp.hh
                 include/tcp/async/io_service.hh
                 include/tcp/async/server.hh
                 include/tcp/util/address.hh
-                include/tcp/util/async_value.hh
+                include/tcp/util/maybe.hh
                 include/tcp/util/buffer.hh
                 include/tcp/util/canceller.hh
                 include/tcp/util/nothing.hh

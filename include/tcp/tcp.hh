@@ -5,4 +5,5 @@
 #include "tcp/async/io_service.hh"
 #include "tcp/util/address.hh"
 #include "tcp/util/buffer.hh"
+#include "tcp/util/maybe.hh"
 #endif

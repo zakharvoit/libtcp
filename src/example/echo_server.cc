@@ -3,13 +3,17 @@
 
 using namespace std;
 using namespace tcp;
+using namespace tcp::util;
 
 struct echo_server
 {
-    echo_server(util::address const& addr)
+
+    echo_server(address const& addr)
             : s(addr)
     {
-        listening = s.listen(service, [=](async::client&& c) { this->on_accept(move(c)); });
+        listening = s.listen(service, [=](maybe<async::client>&& c) {
+            this->on_accept(move(c.get()));
+        });
         service.start();
     }
 
@@ -17,7 +21,9 @@ struct echo_server
     {
         listening.cancel();
         this->c = move(c);
-        this->c.read(service, 1, [=](util::buffer b) { this->on_read(**b); });
+        this->c.read(service, 1, [=](maybe<buffer>&& b) {
+            this->on_read(**(b.get()));
+        });
     }
 
     void on_read(char c)
@@ -28,11 +34,13 @@ struct echo_server
             return;
         }
 
-        this->c.read(service, 1, [=](util::buffer b) { this->on_read(**b); });
+        this->c.read(service, 1, [=](maybe<buffer>&& b) {
+            this->on_read(**(b.get()));
+        });
     }
 
 private:
-    util::canceller listening;
+    canceller listening;
     async::io_service service;
     async::server s;
     async::client c;

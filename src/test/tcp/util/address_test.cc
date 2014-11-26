@@ -8,11 +8,11 @@ using namespace tcp::util;
 TEST(address, correctness)
 {
     address addr("127.0.0.1:8080");
-    ASSERT_EQ(addr.get_ip_addr(), inet_addr("127.0.0.1"));
-    ASSERT_EQ(addr.get_port(), 8080);
+    ASSERT_EQ(inet_addr("127.0.0.1"), addr.get_ip_addr());
+    ASSERT_EQ(8080, addr.get_port());
 
     address addr_hex("0xFF.0xFF.0xFF.0xFF:8080");
-    ASSERT_EQ(addr_hex.get_ip_addr(), -1);
+    ASSERT_EQ(-1, addr_hex.get_ip_addr());
 }
 
 TEST(address, exceptions)

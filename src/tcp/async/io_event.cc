@@ -7,7 +7,7 @@
 
 #include <stdexcept>
 #include <cstring>
-#include <ldap.h>
+#include <iostream>
 
 using namespace std;
 using namespace tcp::async;
@@ -54,13 +54,15 @@ bool read_event::handle()
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return false;
         } else {
-            throw runtime_error(strerror(errno));
+			on_read(error<buffer>(runtime_error(strerror(errno))));
+			return true;
         }
     }
 
     buf += read;
     if (buf.rest_length() == 0) {
-        on_read(buf);
+        buf.reset();
+        on_read(success(buf));
         return true;
     }
 
@@ -76,13 +78,14 @@ bool write_event::handle()
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return false;
         } else {
-            throw runtime_error(strerror(errno));
+			on_write(error<nothing>(runtime_error(strerror(errno))));
+			return true;
         }
     }
 
     buf += written;
     if (buf.rest_length() == 0) {
-        on_write();
+        on_write(success());
         return true;
     }
 
@@ -100,11 +103,12 @@ bool accept_event::handle()
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return false;
         } else {
-            throw runtime_error(strerror(errno));
+			on_accept(error<client>(runtime_error(strerror(errno))));
+			return true;
         }
     }
 
-    on_accept(client(peer_fd));
+    on_accept(success(client(peer_fd)));
 
     // Return false allows to accept many connections by one event
     // So the only way to stop listening is to use cancel.
@@ -122,11 +126,12 @@ bool connect_event::handle()
         if (errno == EINPROGRESS) {
             return false;
         } else {
-            throw runtime_error(strerror(errno));
+			on_connect(error<nothing>(runtime_error(strerror(errno))));
+			return false;
         }
     }
 
-    on_connect();
+    on_connect(success());
     return true;
 }
 

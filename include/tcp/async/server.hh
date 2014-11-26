@@ -2,7 +2,6 @@
 #define SERVER_HH
 
 #include "tcp/util/address.hh"
-#include "tcp/util/async_value.hh"
 #include "tcp/util/canceller.hh"
 #include "tcp/async/io_service.hh"
 #include "tcp/async/io_event.hh"

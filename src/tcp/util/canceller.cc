@@ -1,4 +1,5 @@
 #include "tcp/util/canceller.hh"
+#include "tcp/async/io_event.hh"
 
 using namespace tcp::util;
 using namespace tcp::async;

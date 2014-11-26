@@ -1,4 +1,5 @@
 #include "tcp/async/client.hh"
+#include "tcp/async/io_service.hh"
 
 #include <sys/socket.h>
 #include <unistd.h>
@@ -52,11 +53,13 @@ client::client(client&& c)
     c.fd = -1;
 }
 
-void client::operator=(client&& other)
+client& client::operator=(client&& other)
 {
     close(fd);
     fd = other.fd;
     other.fd = -1;
+
+    return *this;
 }
 
 client::~client()

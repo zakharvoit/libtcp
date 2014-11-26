@@ -1,7 +1,9 @@
 #include "tcp/util/buffer.hh"
 #include <cstddef>
 #include <cstring>
+#include <iostream>
 
+using namespace std;
 using namespace tcp::util;
 
 buffer::buffer(void* data, size_t count)
@@ -42,9 +44,12 @@ buffer::~buffer()
 
 buffer& buffer::operator=(buffer const& other)
 {
+    if (this == &other) return *this;
+
     char* new_data = new char[other.count];
     delete[] data;
     data = new_data;
+    begin = data;
     count = other.count;
     memcpy(data, other.data, count);
 

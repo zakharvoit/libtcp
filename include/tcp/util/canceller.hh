@@ -1,10 +1,13 @@
 #ifndef CANCELLER_HH
 #define CANCELLER_HH
 
-#include "tcp/async/io_event.hh"
-
 namespace tcp
 {
+    namespace async
+    {
+        struct io_event;
+    }
+
     namespace util
     {
         struct canceller
