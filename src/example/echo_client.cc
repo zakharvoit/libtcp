@@ -24,22 +24,18 @@ struct echo_client
         cin >> noskipws >> c;
         client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
             e.get();
-            this->on_write(c);
+            this->on_write();
         });
     }
 
-    void on_write(char written)
+    void on_write()
     {
-        if (written == '-') {
-            service.stop();
-        } else {
-            char c;
-            cin >> c;
-            client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
+		char c;
+		cin >> c;
+		client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
                 e.get();
-                this->on_write(c);
+                this->on_write();
             });
-        }
     }
 
 private:

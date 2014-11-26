@@ -19,23 +19,29 @@ struct echo_server
 
     void on_accept(async::client&& c)
     {
-        listening.cancel();
-        this->c = move(c);
-        this->c.read(service, 1, [=](maybe<buffer>&& b) {
-            this->on_read(**(b.get()));
+		clients.push_front(move(c));
+		auto it = clients.begin();
+		auto& cl = *it;
+        cl.read(service, 1, [=](maybe<buffer>&& b) {
+			this->on_read(it, **(b.get()));
         });
     }
 
-    void on_read(char c)
+    void on_read(list<async::client>::iterator it, char c)
     {
+		auto& cl = *it;
         cout << c << flush;
-        if (c == '-') {
-            service.stop();
-            return;
-        }
-
-        this->c.read(service, 1, [=](maybe<buffer>&& b) {
-            this->on_read(**(b.get()));
+		cl.read(service, 1, [=](maybe<buffer>&& bm) {
+			try {
+			    auto b = bm.get();
+				this->on_read(it, **b);
+			} catch (...) {
+				clients.erase(it);
+				if (clients.empty()) {
+					service.stop();
+				}
+				return;
+			}
         });
     }
 
@@ -43,7 +49,7 @@ private:
     canceller listening;
     async::io_service service;
     async::server s;
-    async::client c;
+    list<async::client> clients;
 };
 
 int main()
