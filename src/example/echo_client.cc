@@ -51,9 +51,12 @@ int main()
 {
     try {
         echo_client(util::address("127.0.0.1:33333"));
+    } catch (exception* e) {
+        cerr << e->what() << endl;
+		delete e;
     } catch (exception const& e) {
-        cerr << e.what() << endl;
-    }
+		cerr << e.what() << endl;
+	}
 
     return 0;
 }
