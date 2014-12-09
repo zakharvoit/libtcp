@@ -8,7 +8,6 @@ using namespace tcp::util;
 
 struct echo_client
 {
-
     echo_client(address const& addr)
     {
         client.connect(service, addr, [&](maybe<nothing>&& e) {

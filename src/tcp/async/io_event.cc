@@ -59,6 +59,7 @@ bool read_event::handle()
         }
     } else if (read == 0) {
 		on_read(error<buffer>(runtime_error("Client was disconnected")));
+		
 	}
 
     buf += read;
