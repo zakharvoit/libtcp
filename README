@@ -1,4 +1,4 @@
 ==== libsocket ====
 
-Wrapper around BSD-sockets.
+Asynchronious wrapper around BSD-sockets.
 
