@@ -20,7 +20,10 @@ struct echo_client
     void on_connect()
     {
         char c;
-        cin >> noskipws >> c;
+        if (!(cin >> noskipws >> c)) {
+	    service.stop();
+	    return;
+	}
         client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
 		if (!e) e.raise();
 		this->on_write();
@@ -29,12 +32,14 @@ struct echo_client
 
     void on_write()
     {
-		char c;
-		cin >> c;
-		client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
-			if (!e) e.raise();
-			this->on_write();
-		    });
+	char c;
+	if (!(cin >> c)) {
+	    service.stop();
+	}
+	client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
+		if (!e) e.raise();
+		this->on_write();
+	    });
     }
 
 private:
