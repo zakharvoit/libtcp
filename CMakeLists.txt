@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(tcp)
 
 set(CXX_DEBUG "-Wall -Wextra -g -D_GLIBCXX_DEBUG -fsanitize=undefined")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_DEBUG} -std=c++11 ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_DEBUG} -std=c++14 ")
 
 include_directories(include)
 set(SOURCES     include/tcp/tcp.hh
@@ -24,7 +24,8 @@ set(SOURCES     include/tcp/tcp.hh
                 src/tcp/async/server.cc
                 src/tcp/util/address.cc
                 src/tcp/util/buffer.cc
-                src/tcp/util/canceller.cc)
+                src/tcp/util/canceller.cc
+		src/tcp/util/error.cc)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_link_libraries(${PROJECT_NAME})

@@ -54,13 +54,12 @@ bool read_event::handle()
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return false;
         } else {
-			on_read(error<buffer>(runtime_error(strerror(errno))));
-			return true;
+	    on_read(error<buffer>(errno));
+	    return true;
         }
     } else if (read == 0) {
-		on_read(error<buffer>(runtime_error("Client was disconnected")));
-		
-	}
+	on_read(error<buffer>(ECONNABORTED));
+    }
 
     buf += read;
     if (buf.rest_length() == 0) {
@@ -81,8 +80,8 @@ bool write_event::handle()
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return false;
         } else {
-			on_write(error<nothing>(runtime_error(strerror(errno))));
-			return true;
+	    on_write(error<nothing>(errno));
+	    return true;
         }
     }
 
@@ -106,8 +105,8 @@ bool accept_event::handle()
         if (errno == EAGAIN || errno == EWOULDBLOCK) {
             return false;
         } else {
-			on_accept(error<client>(runtime_error(strerror(errno))));
-			return true;
+	    on_accept(error<client>(errno));
+	    return true;
         }
     }
 
@@ -129,8 +128,8 @@ bool connect_event::handle()
         if (errno == EINPROGRESS) {
             return false;
         } else {
-			on_connect(error<nothing>(runtime_error(strerror(errno))));
-			return false;
+	    on_connect(error<nothing>(errno));
+	    return false;
         }
     }
 

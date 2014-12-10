@@ -2,6 +2,7 @@
 #define ASYNC_VALUE_HH
 
 #include "tcp/util/nothing.hh"
+#include "tcp/util/error.hh"
 
 #include <stdexcept>
 #include <iostream>
@@ -14,45 +15,58 @@ namespace tcp
         template <typename T>
         struct maybe
         {
-			maybe(T const& value)
-				: has_value(true), value(value) {}
+	    maybe(T const& value)
+		: has_value(true),
+		  value(value) {}
 			
             maybe(T&& value)
-                    : has_value(true), value(std::move(value))
-            {}
+                    : has_value(true),
+		      value(std::move(value)) {}
 
-            maybe(std::exception* err)
-                    : has_value(false), err(err)
-            {
-			}
-
+	    maybe(error_code const& error)
+		: has_value(false),
+		  error(error) {}
+	    
             maybe(maybe<T>&& m)
                 : has_value(std::move(m.has_value))
             {
                 if (has_value) {
                     value = std::move(m.value);
                 } else {
-                    err = std::move(m.err);
+                    error = m.error;
                 }
-				m.has_value = false;
-				m.err = nullptr;
+		m.has_value = false;
+		m.error.invalidate();
             }
 
             ~maybe()
             {
                 if (has_value) value.~T();
-                else delete err;
             }
 
             T get()
             {
                 if (has_value) return std::move(value);
-				auto res = err;
-				err = nullptr;
-				throw res;
+		error.raise();
+
+		// Really this code is unreachable, just to avoid
+		// compiler warnings
+		return std::move(value);
             }
 
-            bool ok() const
+	    error_code get_error() const
+	    {
+		return error;
+	    }
+
+	    void raise()
+	    {
+		if (!has_value) {
+		    error.raise();
+		}
+	    }
+
+	    operator bool()
             {
                 return has_value;
             }
@@ -61,7 +75,7 @@ namespace tcp
             bool has_value;
             union
             {
-                std::exception* err;
+		error_code error;
                 T value;
             };
         };
@@ -83,12 +97,18 @@ namespace tcp
             return maybe<nothing>(nothing());
         }
 
-        template <typename T, typename E>
-        inline maybe<T> error(E const& err)
+        template <typename T>
+        inline maybe<T> error(int const& err)
         {
-            return maybe<T>(new E(err));
+            return maybe<T>(error_code(err));
         }
-    }
+
+        template <typename T>
+        inline maybe<T> error(error_code const& err)
+        {
+            return maybe<T>(err);
+        }
+     }
 }
 
 #endif

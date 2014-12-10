@@ -11,9 +11,9 @@ struct echo_client
     echo_client(address const& addr)
     {
         client.connect(service, addr, [&](maybe<nothing>&& e) {
-            e.get();
-            this->on_connect();
-        });
+		if (!e) e.raise();
+		this->on_connect();
+	    });
         service.start();
     }
 
@@ -22,9 +22,9 @@ struct echo_client
         char c;
         cin >> noskipws >> c;
         client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
-            e.get();
-            this->on_write();
-        });
+		if (!e) e.raise();
+		this->on_write();
+	    });
     }
 
     void on_write()
@@ -32,9 +32,9 @@ struct echo_client
 		char c;
 		cin >> c;
 		client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
-                e.get();
-                this->on_write();
-            });
+			if (!e) e.raise();
+			this->on_write();
+		    });
     }
 
 private:
@@ -46,12 +46,9 @@ int main()
 {
     try {
         echo_client(util::address("127.0.0.1:33333"));
-    } catch (exception* e) {
-        cerr << e->what() << endl;
-		delete e;
     } catch (exception const& e) {
-		cerr << e.what() << endl;
-	}
+	cerr << e.what() << endl;
+    }
 
     return 0;
 }
