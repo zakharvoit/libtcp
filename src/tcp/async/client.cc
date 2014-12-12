@@ -21,8 +21,8 @@ client::client()
 }
 
 canceller client::connect(io_service& service,
-        tcp::util::address const& addr,
-        on_connect_cb cb)
+			  tcp::util::address const& addr,
+			  on_connect_cb cb)
 {
     auto ev = new connect_event(fd, addr, cb);
     service.add_event(fd, ev);
@@ -30,10 +30,18 @@ canceller client::connect(io_service& service,
 }
 
 canceller client::read(io_service& service,
-        size_t count,
-        on_read_cb cb)
+		       size_t count,
+		       on_read_cb cb)
 {
     auto ev = new read_event(fd, count, cb);
+    service.add_event(fd, ev);
+    return make_canceller(ev);
+}
+
+canceller client::read_some(io_service& service,
+			    on_read_cb cb)
+{
+    auto ev = new read_some_event(fd, cb);
     service.add_event(fd, ev);
     return make_canceller(ev);
 }

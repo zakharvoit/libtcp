@@ -23,27 +23,38 @@ struct echo_server
 	clients.push_front(move(c));
 	auto it = clients.begin();
 	auto& cl = *it;
-        cl.read(service, 1, [=](maybe<buffer>&& b) {
-		if (!b) b.raise();
-		this->on_read(it, **(b.get()));
+        cl.read_some(service, [=](maybe<buffer>&& b) {
+		if (!b) {
+		    handle_error(it);
+		    return;
+		}
+		this->on_read(it, b.get());
 	    });
     }
 
-    void on_read(list<async::client>::iterator it, char c)
+    void on_read(list<async::client>::iterator it, buffer b)
     {
 	auto& cl = *it;
-	cout << c << flush;
-	cl.read(service, 1, [=](maybe<buffer>&& bm) {
-		if (!bm) {
-		    clients.erase(it);
-		    if (clients.empty()) {
-			service.stop();
-		    }
+	while (b.rest_length()) {
+	    cout << **b;
+	    b += 1;
+	}
+	cout << flush;
+	cl.read_some(service, [=](maybe<buffer>&& b) {
+		if (!b) {
+		    handle_error(it);
 		    return;
 		}
-		auto b = bm.get();
-		this->on_read(it, **b);
+		this->on_read(it, b.get());
 	    });
+    }
+
+    void handle_error(list<async::client>::iterator const& it)
+    {
+	clients.erase(it);
+	if (clients.empty()) {
+	    service.stop();
+	}	
     }
     
 private:

@@ -14,29 +14,35 @@ using namespace tcp::async;
 using namespace tcp::util;
 
 read_event::read_event(int fd,
-        size_t count,
-        on_read_cb cb)
-        : fd(fd), buf(count), on_read(cb)
+		       size_t count,
+		       on_read_cb cb)
+    : fd(fd), buf(count), on_read(cb)
+{
+}
+
+read_some_event::read_some_event(int fd,
+				 on_read_cb cb)
+    : fd(fd), buf(new char[MAX_BUFFER_SIZE]), on_read(cb)
 {
 }
 
 write_event::write_event(int fd,
-        buffer b,
-        on_write_cb cb)
-        : fd(fd), buf(b), on_write(cb)
+			 buffer b,
+			 on_write_cb cb)
+    : fd(fd), buf(b), on_write(cb)
 {
 }
 
 accept_event::accept_event(int fd,
-        on_accept_cb cb)
-        : fd(fd), on_accept(cb)
+			   on_accept_cb cb)
+    : fd(fd), on_accept(cb)
 {
 }
 
 connect_event::connect_event(int fd,
-        util::address addr,
-        on_connect_cb cb)
-        : fd(fd), addr(addr), on_connect(cb)
+			     util::address addr,
+			     on_connect_cb cb)
+    : fd(fd), addr(addr), on_connect(cb)
 {
 }
 
@@ -59,6 +65,7 @@ bool read_event::handle()
         }
     } else if (read == 0) {
 	on_read(error<buffer>(ECONNABORTED));
+	return true;
     }
 
     buf += read;
@@ -69,6 +76,29 @@ bool read_event::handle()
     }
 
     return false;
+}
+
+bool read_some_event::handle()
+{
+    if (io_event::handle()) return true;
+
+    ssize_t read = ::read(fd, buf,
+			  MAX_BUFFER_SIZE);
+    if (read < 0) {
+        if (errno == EAGAIN || errno == EWOULDBLOCK) {
+            return false;
+        } else {
+	    on_read(error<buffer>(errno));
+	    return true;
+        }
+    } else if (read == 0) {
+	on_read(error<buffer>(ECONNABORTED));
+	return true;
+    }
+
+    buffer result(buf, read);
+    on_read(success(result));
+    return true;
 }
 
 bool write_event::handle()
@@ -138,6 +168,11 @@ bool connect_event::handle()
 }
 
 uint32_t read_event::events_flag()
+{
+    return EPOLLIN;
+}
+
+uint32_t read_some_event::events_flag()
 {
     return EPOLLIN;
 }

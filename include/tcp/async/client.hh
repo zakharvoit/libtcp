@@ -33,6 +33,8 @@ namespace tcp
             canceller read(io_service&,
                     size_t count,
                     function<void(maybe<buffer>&&)>);
+	    canceller read_some(io_service&,
+				function<void(maybe<buffer>&&)>);
             canceller write(io_service&,
                     util::buffer,
                     function<void(maybe<nothing>&&)>);

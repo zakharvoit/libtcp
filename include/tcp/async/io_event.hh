@@ -14,7 +14,7 @@ namespace tcp
 {
     namespace async
     {
-		typedef std::function <void(util::maybe <client>&&)> on_accept_cb;
+	typedef std::function <void(util::maybe <client>&&)> on_accept_cb;
         typedef std::function <void(util::maybe <util::nothing>&&)> on_connect_cb;
         typedef std::function <void(util::maybe <util::buffer>&&)> on_read_cb;
         typedef std::function <void(util::maybe <util::nothing>&&)> on_write_cb;
@@ -46,6 +46,22 @@ namespace tcp
         private:
             int fd;
             util::buffer buf;
+            on_read_cb on_read;
+        };
+
+        struct read_some_event : io_event
+        {
+            read_some_event(int fd,
+                    on_read_cb);
+
+            bool handle() override;
+
+            uint32_t events_flag() override;
+
+        private:
+	    static const size_t MAX_BUFFER_SIZE = 256;
+            int fd;
+	    char* buf;
             on_read_cb on_read;
         };
 

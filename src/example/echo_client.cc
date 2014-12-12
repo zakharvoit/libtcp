@@ -5,7 +5,6 @@ using namespace std;
 using namespace tcp;
 using namespace tcp::util;
 
-
 struct echo_client
 {
     echo_client(address const& addr)
@@ -35,6 +34,7 @@ struct echo_client
 	char c;
 	if (!(cin >> c)) {
 	    service.stop();
+	    return;
 	}
 	client.write(service, buffer(&c, 1), [=](maybe<nothing>&& e) {
 		if (!e) e.raise();
