@@ -2,6 +2,7 @@
 #define BUFFER_HH
 
 #include <cstddef>
+#include <string>
 
 namespace tcp
 {
@@ -13,6 +14,9 @@ namespace tcp
             buffer(size_t count);
             buffer(buffer&&);
             buffer(buffer const&);
+	    buffer(std::string const& s)
+		: buffer((char*) s.c_str(), s.length() + 1)
+	    {}
 
             ~buffer();
 
