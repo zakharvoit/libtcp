@@ -31,7 +31,7 @@ namespace tcp
 				: has_value(std::move(m.has_value))
 			{
 				if (has_value) {
-					value = std::move(m.value);
+					new (&value) T(std::move(m.value));
 				} else {
 					error = m.error;
 				}
