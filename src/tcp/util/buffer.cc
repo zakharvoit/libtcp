@@ -49,11 +49,24 @@ buffer& buffer::operator=(buffer const& other)
 	char* new_data = new char[other.count];
 	delete[] data;
 	data = new_data;
-	begin = data;
+	begin = other.begin;
 	count = other.count;
 	memcpy(data, other.data, count);
 
 	return *this;
+}
+
+buffer& buffer::operator=(buffer&& other)
+{
+	if (this == &other) return *this;
+
+	delete[] data;
+	data = other.data;
+	other.data = nullptr;
+	begin = other.begin;
+	other.begin = nullptr;
+	count = other.count;
+	other.count = 0;
 }
 
 void buffer::reset()

@@ -21,6 +21,8 @@ namespace tcp
 			~buffer();
 
 			buffer& operator=(buffer const&);
+			buffer& operator=(buffer&&);
+
 			void reset();
 			size_t rest_length() const;
 			char* operator*();
