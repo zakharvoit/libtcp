@@ -6,51 +6,51 @@
 
 namespace tcp
 {
-    namespace util
-    {
-	struct tcp_exception;
-
-	struct error_code
+	namespace util
 	{
-	    error_code(int err)
-		: error(err) {}
+		struct tcp_exception;
 
-	    int get_errno() const
-	    {
-		return error;
-	    }
+		struct error_code
+		{
+			error_code(int err)
+				: error(err) {}
 
-	    bool operator==(error_code const& e)
-	    {
-		return error == e.error;
-	    }
+			int get_errno() const
+			{
+				return error;
+			}
 
-	    void invalidate()
-	    {
-		error = -1;
-	    }
+			bool operator==(error_code const& e)
+			{
+				return error == e.error;
+			}
 
-	    void raise();
+			void invalidate()
+			{
+				error = -1;
+			}
 
-	private:
-	    int error;
-	};
+			void raise();
 
-	struct tcp_exception : std::runtime_error
-	{
-	    tcp_exception(error_code const& error)
-		: std::runtime_error(strerror(error.get_errno())),
-		  error(error) {}
+		private:
+			int error;
+		};
 
-	    error_code get_error() const
-	    {
-		return error;
-	    }
+		struct tcp_exception : std::runtime_error
+		{
+			tcp_exception(error_code const& error)
+				: std::runtime_error(strerror(error.get_errno())),
+				  error(error) {}
 
-	private:
-	    error_code error;
-	};
-    }
+			error_code get_error() const
+			{
+				return error;
+			}
+
+		private:
+			error_code error;
+		};
+	}
 }
 
 #endif

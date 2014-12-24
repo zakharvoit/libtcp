@@ -12,105 +12,105 @@
 
 namespace tcp
 {
-    namespace async
-    {
-	typedef std::function <void(util::maybe <client>&&)> on_accept_cb;
-        typedef std::function <void(util::maybe <util::nothing>&&)> on_connect_cb;
-        typedef std::function <void(util::maybe <util::buffer>&&)> on_read_cb;
-        typedef std::function <void(util::maybe <util::nothing>&&)> on_write_cb;
+	namespace async
+	{
+		typedef std::function <void(util::maybe <client>&&)> on_accept_cb;
+		typedef std::function <void(util::maybe <util::nothing>&&)> on_connect_cb;
+		typedef std::function <void(util::maybe <util::buffer>&&)> on_read_cb;
+		typedef std::function <void(util::maybe <util::nothing>&&)> on_write_cb;
 
-        struct io_event
-        {
-            io_event();
-            virtual ~io_event() = default;
+		struct io_event
+		{
+			io_event();
+			virtual ~io_event() = default;
 
-            virtual bool handle();
-            virtual uint32_t events_flag() = 0;
+			virtual bool handle();
+			virtual uint32_t events_flag() = 0;
 
-            void cancel();
+			void cancel();
 
-        private:
-            bool cancelled;
-        };
+		private:
+			bool cancelled;
+		};
 
-        struct read_event : io_event
-        {
-            read_event(int fd,
-                    size_t,
-                    on_read_cb);
+		struct read_event : io_event
+		{
+			read_event(int fd,
+			           size_t,
+			           on_read_cb);
 
-            bool handle() override;
+			bool handle() override;
 
-            uint32_t events_flag() override;
+			uint32_t events_flag() override;
 
-        private:
-            int fd;
-            util::buffer buf;
-            on_read_cb on_read;
-        };
+		private:
+			int fd;
+			util::buffer buf;
+			on_read_cb on_read;
+		};
 
-        struct read_some_event : io_event
-        {
-            read_some_event(int fd,
-                    on_read_cb);
+		struct read_some_event : io_event
+		{
+			read_some_event(int fd,
+			                on_read_cb);
 
-            bool handle() override;
+			bool handle() override;
 
-            uint32_t events_flag() override;
+			uint32_t events_flag() override;
 
-        private:
-	    static const size_t MAX_BUFFER_SIZE = 256;
-            int fd;
-	    char* buf;
-            on_read_cb on_read;
-        };
+		private:
+			static const size_t MAX_BUFFER_SIZE = 256;
+			int fd;
+			char* buf;
+			on_read_cb on_read;
+		};
 
-        struct write_event : io_event
-        {
-            write_event(int fd,
-                    util::buffer b,
-                    on_write_cb);
+		struct write_event : io_event
+		{
+			write_event(int fd,
+			            util::buffer b,
+			            on_write_cb);
 
-            bool handle() override;
+			bool handle() override;
 
-            uint32_t events_flag() override;
+			uint32_t events_flag() override;
 
-        private:
-            int fd;
-            util::buffer buf;
-            on_write_cb on_write;
-        };
+		private:
+			int fd;
+			util::buffer buf;
+			on_write_cb on_write;
+		};
 
-        struct accept_event : io_event
-        {
-            accept_event(int fd,
-                    on_accept_cb);
+		struct accept_event : io_event
+		{
+			accept_event(int fd,
+			             on_accept_cb);
 
-            bool handle() override;
+			bool handle() override;
 
-            uint32_t events_flag() override;
+			uint32_t events_flag() override;
 
-        private:
-            int fd;
-            on_accept_cb on_accept;
-        };
+		private:
+			int fd;
+			on_accept_cb on_accept;
+		};
 
-        struct connect_event : io_event
-        {
-            connect_event(int fd,
-                    util::address addr,
-                    on_connect_cb);
+		struct connect_event : io_event
+		{
+			connect_event(int fd,
+			              util::address addr,
+			              on_connect_cb);
 
-            bool handle() override;
+			bool handle() override;
 
-            uint32_t events_flag() override;
+			uint32_t events_flag() override;
 
-        private:
-            int fd;
-            util::address addr;
-            on_connect_cb on_connect;
-        };
-    }
+		private:
+			int fd;
+			util::address addr;
+			on_connect_cb on_connect;
+		};
+	}
 }
 
 #endif

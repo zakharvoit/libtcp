@@ -3,12 +3,12 @@
 
 namespace tcp
 {
-    namespace util
-    {
-        struct nothing
-        {
-        };
-    }
+	namespace util
+	{
+		struct nothing
+		{
+		};
+	}
 }
 
 #endif

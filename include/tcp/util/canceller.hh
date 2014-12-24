@@ -3,29 +3,29 @@
 
 namespace tcp
 {
-    namespace async
-    {
-        struct io_event;
-    }
+	namespace async
+	{
+		struct io_event;
+	}
 
-    namespace util
-    {
-        struct canceller
-        {
-            canceller() = default;
+	namespace util
+	{
+		struct canceller
+		{
+			canceller() = default;
 
-            void cancel();
+			void cancel();
 
-        private:
-            async::io_event* event;
+		private:
+			async::io_event* event;
 
-            canceller(async::io_event*);
+			canceller(async::io_event*);
 
-            friend canceller make_canceller(async::io_event*);
-        };
+			friend canceller make_canceller(async::io_event*);
+		};
 
-        canceller make_canceller(async::io_event*);
-    }
+		canceller make_canceller(async::io_event*);
+	}
 }
 
 #endif

@@ -10,27 +10,27 @@
 
 namespace tcp
 {
-    namespace async
-    {
-        struct io_service
-        {
-            io_service();
+	namespace async
+	{
+		struct io_service
+		{
+			io_service();
 
-            void start();
-            void stop();
+			void start();
+			void stop();
 
-        private:
-            c::epoll e;
-            std::unordered_map <int, std::list <io_event*> > callbacks;
+		private:
+			c::epoll e;
+			std::unordered_map <int, std::list <io_event*> > callbacks;
 
-            void add_event(int fd, io_event* ev);
+			void add_event(int fd, io_event* ev);
 
-            void on_ready(int fd, uint32_t events);
+			void on_ready(int fd, uint32_t events);
 
-            friend struct client;
-            friend struct server;
-        };
-    }
+			friend struct client;
+			friend struct server;
+		};
+	}
 }
 
 #endif
