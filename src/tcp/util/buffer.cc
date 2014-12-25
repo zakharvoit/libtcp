@@ -67,6 +67,8 @@ buffer& buffer::operator=(buffer&& other)
 	other.begin = nullptr;
 	count = other.count;
 	other.count = 0;
+
+	return *this;
 }
 
 void buffer::reset()
@@ -79,7 +81,7 @@ size_t buffer::rest_length() const
 	return count - (begin - data);
 }
 
-char* buffer::operator*()
+char* buffer::operator*() const
 {
 	return begin;
 }

@@ -25,7 +25,7 @@ namespace tcp
 
 			void reset();
 			size_t rest_length() const;
-			char* operator*();
+			char* operator*() const;
 			void operator+=(int x);
 
 		private:
