@@ -30,9 +30,6 @@ namespace tcp
 	    
 			maybe(maybe<T>&& m)
 			{
-				if (has_value) {
-					value.~T();
-				}
 				has_value = m.has_value;
 				if (has_value) {
 					new (&value) T(std::move(m.value));
