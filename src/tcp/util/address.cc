@@ -28,9 +28,18 @@ address::address(string const& addr)
 	sockaddr.sin_family = AF_INET;
 	make_address(addr, sockaddr);
 }
+
 uint32_t address::get_ip_addr() const
-{return sockaddr.sin_addr.s_addr;}
+{
+	return sockaddr.sin_addr.s_addr;
+}
+
 uint16_t address::get_port() const
-{return ntohs(sockaddr.sin_port);}
+{
+	return ntohs(sockaddr.sin_port);
+}
+
 sockaddr_in address::get_sockaddr() const
-{return sockaddr;}
+{
+	return sockaddr;
+}

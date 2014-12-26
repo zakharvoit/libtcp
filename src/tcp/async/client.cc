@@ -56,7 +56,6 @@ canceller client::write(io_service& service, buffer buffer, on_write_cb cb)
 
 client::client(client&& c)
 {
-	close(fd);
 	fd = c.fd;
 	c.fd = -1;
 }

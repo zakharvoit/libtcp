@@ -23,6 +23,7 @@ struct echo_server
 		clients.push_front(move(c));
 		auto it = clients.begin();
 		auto& cl = *it;
+<<<<<<< HEAD
 		cl.read_some(service, [=](maybe<buffer>&& b) {
 				if (!b) {
 					handle_error(it);

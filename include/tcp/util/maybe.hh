@@ -6,6 +6,7 @@
 
 #include <stdexcept>
 #include <iostream>
+#include <type_traits>
 
 namespace tcp
 {
@@ -28,8 +29,11 @@ namespace tcp
 				  error(error) {}
 	    
 			maybe(maybe<T>&& m)
-				: has_value(std::move(m.has_value))
 			{
+				if (has_value) {
+					value.~T();
+				}
+				has_value = m.has_value;
 				if (has_value) {
 					new (&value) T(std::move(m.value));
 				} else {
