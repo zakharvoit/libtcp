@@ -40,6 +40,16 @@ namespace tcp
 				m.error.invalidate();
 			}
 
+			maybe(maybe<T> const& m)
+			{
+				has_value = m.has_value;
+				if (has_value) {
+					new (&value) T(m.value);
+				} else {
+					error = m.error;
+				}
+			}
+
 			~maybe()
 			{
 				if (has_value) value.~T();
@@ -47,12 +57,21 @@ namespace tcp
 
 			T get()
 			{
-				if (has_value) return std::move(value);
-				error.raise();
+				if (!has_value) {
+					error.raise();
+				}
 
-				// Really this code is unreachable, just to avoid
-				// compiler warnings
 				return std::move(value);
+			}
+
+			T get() const
+			{
+				if (!has_value) {
+					error.raise();
+				}
+
+				// We need copy constructor in type T to implement get() const.
+				return value;
 			}
 
 			error_code get_error() const
@@ -60,7 +79,7 @@ namespace tcp
 				return error;
 			}
 
-			void raise()
+			void raise() const
 			{
 				if (!has_value) {
 					error.raise();

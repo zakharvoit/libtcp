@@ -30,7 +30,7 @@ namespace tcp
 				error = -1;
 			}
 
-			void raise();
+			void raise() const;
 
 		private:
 			int error;
