@@ -10,21 +10,21 @@
 
 namespace tcp
 {
-    namespace async
-    {
-        struct server
-        {
-            server(util::address const&);
-            ~server();
+	namespace async
+	{
+		struct server
+		{
+			server(util::address const&);
+			~server();
 
-            util::canceller listen(io_service&, on_accept_cb);
+			util::canceller listen(io_service&, on_accept_cb);
 
-        private:
-            int fd;
+		private:
+			int fd;
 
-            friend struct io_event;
-        };
-    }
+			friend struct io_event;
+		};
+	}
 }
 
 #endif

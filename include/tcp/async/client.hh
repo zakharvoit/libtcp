@@ -11,43 +11,43 @@
 
 namespace tcp
 {
-    namespace async
-    {
-        using namespace util;
-        using namespace std;
+	namespace async
+	{
+		using namespace util;
+		using namespace std;
 		struct io_service;
 		
-        struct client
-        {
-            client();
-            ~client();
+		struct client
+		{
+			client();
+			~client();
 
-            client(client const&) = delete;
-            client(client&&);
+			client(client const&) = delete;
+			client(client&&);
 
-            client& operator=(client&&);
+			client& operator=(client&&);
 
-            canceller connect(io_service&,
-                    address const&,
-                    function<void(maybe<nothing>&&)>);
-            canceller read(io_service&,
-                    size_t count,
-                    function<void(maybe<buffer>&&)>);
-            canceller write(io_service&,
-                    util::buffer,
-                    function<void(maybe<nothing>&&)>);
+			canceller connect(io_service&,
+			                  address const&,
+			                  function<void(maybe<nothing>&&)>);
+			canceller read(io_service&,
+			               size_t count,
+			               function<void(maybe<buffer>&&)>);
+			canceller write(io_service&,
+			                util::buffer,
+			                function<void(maybe<nothing>&&)>);
 
-            int get_fd() const { return fd; }
+			int get_fd() const { return fd; }
 
-        private:
-            int fd;
-            client(int fd)
-                    : fd(fd)
-            {}
+		private:
+			int fd;
+			client(int fd)
+				: fd(fd)
+			{}
 
-            friend struct accept_event;
-        };
-    }
+			friend struct accept_event;
+		};
+	}
 }
 
 #endif
