@@ -67,9 +67,14 @@ namespace tcp
 				}
 			}
 
-			operator bool()
+			operator bool() const
 			{
 				return has_value;
+			}
+
+			bool operator!() const
+			{
+				return !bool(*this);
 			}
 
 		private:
