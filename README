@@ -2,3 +2,4 @@
 
 Asynchronious wrapper around BSD-sockets.
 
+Check out src/examples for usage.
